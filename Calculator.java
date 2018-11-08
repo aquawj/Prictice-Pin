@@ -1,4 +1,4 @@
-package Companys.Intuit;
+package Companys.Karat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,8 @@ import java.util.Stack;
 第三小问：在此基础上有variable。有的可以map上数字，有的不行。return一个最简化后的string
 */
 public class Calculator {
-    public static void main(String[] args) {
 
-        System.out.println(calculateIntuit3("a+b+e+w+1+2+a"));
-    }
-    //2+3-999
+    //1. 只有加减和数字：2+3-999
     public static int calculateIntuit(String s) {
         //basis idea是把减号变成负数，这样每个数字都可以相加了
         int sign = 1;//1="+", -1="-"
@@ -40,7 +37,7 @@ public class Calculator {
         return res;
     }
 
-    //2+((8+2)+(3-999))
+    //2.加减数字+括号：2+((8+2)+(3-999))
     //basic calculator2
     public static int calculateIntuit2(String s) {
 
@@ -52,32 +49,33 @@ public class Calculator {
         Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == ' ') {
+            if (c == ' ') { //跳过空格
                 continue;
             }
-            if (Character.isDigit(c)) {
+            if (Character.isDigit(c)) { //数字
                 num = num * 10 + c - '0';
             } else if (c == '+') {
-                res += sign * num;//means end of a num, add previous num
-                num = 0;//reset num
-                sign = 1;//set current sign
+                res += sign * num;//数字已经结束了，把之前结果加上
+                num = 0;//reset 数字num和符号
+                sign = 1;
             } else if (c == '-') {
-                res += sign * num;
-                num = 0;
+                res += sign * num;//数字已经结束了，把之前结果加上
+                num = 0; //reset 数字num和符号
                 sign = -1;
-            } else if (c == '(') {
-                stack.push(res);
+            } else if (c == '(') { //只操作res和sign
+                stack.push(res); // res和sign 入栈 （暂存）
                 stack.push(sign);
                 res = 0;
-                sign = 1;//new sign would be 1
-            } else if (c == ')') {
+                sign = 1;//reset 结果res和符号
+            } else if (c == ')') { //加结果（之前），num归零，出栈res和sign，计算当前结果
                 res += sign * num;
                 num = 0;
-                res *= stack.pop();
-                res += stack.pop();
+                //sign=1;
+                res *= stack.pop();  //符号sign 先出来
+                res += stack.pop(); //数字num 再出来
             }
         }
-        res += sign * num;
+        res += sign * num; //最后一步：如果是数字，需要再加结果；如果是），加的结果中num=0，不影响最后结果
         return res;
     }
 
@@ -147,5 +145,14 @@ public class Calculator {
             res.append(tempS);
         }
         return res.toString();
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(calculateIntuit3("a+b+e+w+1+2+a"));
+        System.out.println(calculateIntuit2("10-(5-(3-2))-2"));
+        System.out.println(calculateIntuit2("3+(5-3)"));
+
+
     }
 }
