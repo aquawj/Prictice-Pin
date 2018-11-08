@@ -23,6 +23,61 @@ public class TextTopK {
         N = n;
     }
 
+    // S3 KEY
+    /*We have a library interfacing with S3 keys, providing an S3Key.next() function
+    which returns the next 8 characters in the file. Empty string is returned when
+    it reaches the end.
+    For example, with below contents
+'This is the first line.\nThis is the second line.'
+        S3Key.next() -> 'This is '
+        S3Key.next() -> 'the firs'
+        S3Key.next() -> 't line.\n'
+        S3Key.next() -> 'This is '
+        S3Key.next() -> 'the seco'
+        S3Key.next() -> 'nd line.'
+        S3Key.next() -> ''
+    The files can be very large and therefore impractical to fully download before
+    working with them.
+    Write a wrapper around S3Key with function next_line() which produces the next
+    line in a file.
+            sln.next_line() => 'This is the first line.\n
+            sln.next_line() => This is the second line*/
+
+    public class S3Keys {
+
+        private String buffer;
+
+        public S3Keys() {
+            this.buffer = "";
+        }
+
+        //return next 8 characters in the file;
+        public String next() {
+            return "";
+        }
+
+        public String nextLine() {
+            String next = this.next();
+
+            StringBuilder line = new StringBuilder(this.buffer);
+
+            //reset buffer to empty after get it;
+            this.buffer = "";
+            while(next!= "") {
+                int breakIndex = next.indexOf('\n');
+                if(breakIndex != -1) {
+                    line.append(next);
+                } else {
+                    line.append(next.substring(0, breakIndex));
+                    this.buffer = next.substring(breakIndex);
+                    break;
+                }
+                next = this.next();
+            }
+            return line.toString();
+        }
+    }
+
     //1.
     public Map<String, String> topKFromUrl() throws Exception{
         Map<String, String> res = new HashMap<>();
